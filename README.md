@@ -15,30 +15,26 @@ The system is built using **FastAPI, PostgreSQL, Redis, Kafka, Docker, and AWS**
 
 ---
 
-# Tech Stack
+## Getting Started
 
-### Backend
-- FastAPI
+### 1. Clone the repository
 
-### Database
-- PostgreSQL
+```bash
+git clone https://github.com/yourname/signal-stream.git
+cd signal-stream
+```
 
-### Cache
-- Redis
+### 2. Start the system
 
-### Event Streaming
-- Kafka
+```bash
+docker-compose up --build
+```
 
-### Machine Learning
-- Scikit-learn
-- XGBoost
+### 3. Open the API docs
 
-### Infrastructure
-- Docker
-
-### Cloud
-- AWS
-
+```
+http://localhost:8000/docs
+```
 ---
 
 ## Getting Started
@@ -50,6 +46,7 @@ Make sure the following are installed:
 - Docker
 - Docker Compose
 - Git
+
 
 
 
