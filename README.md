@@ -20,8 +20,8 @@ The system is built using **FastAPI, PostgreSQL, Redis, Kafka, Docker, and AWS**
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourname/signal-stream.git
-cd signal-stream
+git clone https://github.com/yourname/signal-stream-v3.git
+cd signal-stream-v3
 ```
 
 ### 2. Start the system
@@ -46,6 +46,7 @@ Make sure the following are installed:
 - Docker
 - Docker Compose
 - Git
+
 
 
 
