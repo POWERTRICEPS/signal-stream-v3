@@ -1,5 +1,8 @@
+import time
+
 from fastapi import FastAPI, HTTPException
 from .schemas import *
+from .services.feed_service import build_feed
 
 app = FastAPI()
 
@@ -49,7 +52,12 @@ def create_post(payload: PostCreate):
     if not any(user["id"] == payload.user_id for user in users):
         raise HTTPException(status_code=404, detail="User not found")
 
-    post = {"id": post_id_seq, "user_id": payload.user_id, "content": payload.content}
+    post = {
+        "id": post_id_seq,
+        "user_id": payload.user_id,
+        "content": payload.content,
+        "created_at": time.time(),
+    }
     posts.append(post)
     post_id_seq += 1
     return post
@@ -91,29 +99,4 @@ def list_interactions():
 @app.get("/feed/{user_id}", response_model=list[FeedItem])
 def get_feed(user_id: int):
     """Build a ranked feed by scoring each post from its views, likes, and comments."""
-    if not any(user["id"] == user_id for user in users):
-        raise HTTPException(status_code=404, detail="User not found")
-
-    ranked_posts = []
-
-    for post in posts:
-        post_interactions = [item for item in interactions if item["post_id"] == post["id"]]
-        views = sum(1 for item in post_interactions if item["event_type"] == "view")
-        likes = sum(1 for item in post_interactions if item["event_type"] == "like")
-        comments = sum(1 for item in post_interactions if item["event_type"] == "comment")
-        score = views + likes * 3 + comments * 5
-
-        ranked_posts.append(
-            {
-                "id": post["id"],
-                "user_id": post["user_id"],
-                "content": post["content"],
-                "score": score,
-                "views": views,
-                "likes": likes,
-                "comments": comments,
-            }
-        )
-
-    ranked_posts.sort(key=lambda item: item["score"], reverse=True)
-    return ranked_posts
+    return build_feed(user_id, users, posts, interactions)

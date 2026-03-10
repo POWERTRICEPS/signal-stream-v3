@@ -24,6 +24,7 @@ class PostOut(BaseModel):
     id: int
     user_id: int
     content: str
+    created_at: float
 
 
 # Payload used when recording a user action on a post.
@@ -47,6 +48,7 @@ class FeedItem(BaseModel):
     user_id: int
     content: str
     score: int
+    created_at: float
     views: int
     likes: int
     comments: int
