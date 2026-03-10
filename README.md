@@ -44,31 +44,6 @@ http://localhost:8000/docs
 ## Architecture 
 
 ```text
-Users
-  |
-  v
-FastAPI API Gateway
-  |-------------------------------> PostgreSQL (users, posts, durable interactions)
-  |-------------------------------> Redis (feed cache + online features)
-  |
-  |  (write interactions)
-  v
-Kafka topic: user_interactions
-  |
-  v
-Consumer / Feature Pipeline
-  |-------------------------------> Redis (feature updates, cache refresh)
-  |-------------------------------> PostgreSQL (aggregates, history)
-  |
-  v
-Kafka topic: training_events
-  |
-  v
-Offline retraining jobs -> new ranking model version
-
-Read path for feed:
-Users -> FastAPI -> Ranking Service -> Redis/PostgreSQL -> ranked feed response
-```
 
 
 
