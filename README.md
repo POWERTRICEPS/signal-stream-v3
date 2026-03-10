@@ -1,4 +1,4 @@
-# Signal-stream-v3
+# signal-stream-v3
 
 A distributed backend system that generates personalized content feeds using event-driven architecture and machine learning ranking.
 
@@ -39,6 +39,7 @@ docker-compose up --build
 ```text
 http://localhost:8000/docs
 ```
+
 
 
 
