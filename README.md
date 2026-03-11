@@ -15,17 +15,6 @@ This project is designed to explore how a feed platform can evolve from a simple
 
 That flow is the backbone of systems used in social platforms, media products, and content discovery applications.
 
-## Current Scope
-
-The codebase currently provides a minimal FastAPI service that supports:
-
-- user creation
-- post creation
-- interaction event capture
-- feed ranking based on engagement and recency
-
-At this stage, the service uses in-memory storage and a simple scoring model. That keeps the implementation easy to understand while preserving the system boundaries needed for future expansion.
-
 ## Architecture Direction
 
 Signal Stream v3 is being shaped around the architecture of a scalable feed-generation system. The intended model includes:
@@ -43,12 +32,6 @@ The current prototype represents the earliest version of that pipeline, with app
 Feed ordering is currently determined by a lightweight scoring strategy that combines engagement and freshness. Interactions contribute weighted value, and newer posts receive a recency boost. This provides a simple but practical baseline for testing feed behavior before introducing learned ranking models.
 
 This ranking layer is meant to be replaceable. As the system matures, the same flow can support richer feature engineering, offline training pipelines, online inference, and experimentation frameworks.
-
-## Technology Stack
-
-- FastAPI for the backend service layer
-- Pydantic for data validation and schema enforcement
-- Python for feed logic and service orchestration
 
 ## Getting Started
 
