@@ -6,7 +6,6 @@ from pydantic import BaseModel, Field
 class UserCreate(BaseModel):
     username: str = Field(min_length=3, max_length=50)
 
-
 # Payload used when creating a post for an existing user.
 class PostCreate(BaseModel):
     user_id: int

@@ -36,3 +36,5 @@ def build_feed(user_id: int, users: list[dict], posts: list[dict], interactions:
 
     ranked_posts.sort(key=lambda item: item["score"], reverse=True)
     return ranked_posts
+
+
