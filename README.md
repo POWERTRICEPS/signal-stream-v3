@@ -4,17 +4,6 @@ Signal Stream v3 is a backend foundation for a personalized content feed system.
 
 The long-term direction is a distributed, event-driven backend that can ingest user activity at scale, transform behavioral signals into ranking features, and deliver personalized feeds with low latency. The current implementation is intentionally lightweight and serves as an early prototype of that architecture.
 
-## Project Goal
-
-This project is designed to explore how a feed platform can evolve from a simple application backend into a recommendation system with production-style architecture. The core idea is straightforward:
-
-- users create content
-- user interactions generate events
-- events become ranking signals
-- ranking logic produces an ordered feed
-
-That flow is the backbone of systems used in social platforms, media products, and content discovery applications.
-
 ## Architecture Direction
 
 Signal Stream v3 is being shaped around the architecture of a scalable feed-generation system. The intended model includes:
