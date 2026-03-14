@@ -1,7 +1,7 @@
 import time
 
 from fastapi import FastAPI, HTTPException
-from .services.schemasschemas import *
+from .services.schemas import *
 from .services.feed_service import build_feed
 
 app = FastAPI()
