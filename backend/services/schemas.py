@@ -1,5 +1,5 @@
 from typing import Literal
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 # Payload used when creating a new user through the API.
@@ -14,12 +14,16 @@ class PostCreate(BaseModel):
 
 # Public user shape returned by the API.
 class UserOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     username: str
 
 
 # Public post shape returned by the API.
 class PostOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     user_id: int
     content: str
@@ -35,6 +39,8 @@ class InteractionCreate(BaseModel):
 
 # Public interaction record returned by the API.
 class InteractionOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     user_id: int
     post_id: int
