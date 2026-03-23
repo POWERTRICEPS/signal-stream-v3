@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
 import time
+import json
 
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
@@ -8,6 +9,7 @@ from .database import Base, engine, get_db
 from .services.feed_service import build_feed
 from .services.models import Interaction, Post, User
 from .services.schemas import FeedItem, InteractionCreate, InteractionOut, PostCreate, PostOut, UserCreate, UserOut
+from .redis_client import redis_client
 
 
 @asynccontextmanager
@@ -94,5 +96,17 @@ def list_interactions(db: Session = Depends(get_db)):
 
 @app.get("/feed/{user_id}", response_model=list[FeedItem])
 def get_feed(user_id: int, db: Session = Depends(get_db)):
-    """Build a ranked feed by scoring each post from its views, likes, and comments."""
-    return build_feed(user_id, db)
+    """Return a cached feed when available, otherwise build and cache it."""
+
+    feed_key = f"feed:{user_id}"
+    cached_feed = redis_client.get(feed_key)
+
+    if cached_feed:
+        print("cache hit")
+        return json.loads(cached_feed)
+    
+    print("cache miss")
+    feed = build_feed(user_id, db)
+    redis_client.setex(feed_key, 60, json.dumps(feed))
+    print("feed cached")
+    return feed 
