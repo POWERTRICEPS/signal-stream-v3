@@ -1,26 +1,9 @@
 # Signal Stream v3
 
-Signal Stream v3 is a backend foundation for a personalized content feed system. The project is centered on the core mechanics behind modern recommendation products: event collection, engagement-driven ranking, and feed generation.
+Signal Stream v3 is a backend foundation for a personalized content feed system. The project focuses on the core mechanics behind modern recommendation products: event collection, engagement-driven ranking, caching, and feed generation.
 
 The long-term direction is a distributed, event-driven backend that can ingest user activity at scale, transform behavioral signals into ranking features, and deliver personalized feeds with low latency. The current implementation is intentionally lightweight and serves as an early prototype of that architecture.
 
-## Architecture Direction
-
-Signal Stream v3 is being shaped around the architecture of a scalable feed-generation system. The intended model includes:
-
-- event-driven ingestion for user actions such as views, likes, and comments
-- downstream feature aggregation for ranking inputs
-- machine learning or heuristic ranking layers
-- feed-serving infrastructure optimized for relevance and response time
-- modular services that can be split and scaled independently
-
-The current prototype represents the earliest version of that pipeline, with application logic separated into API, schemas, and feed-ranking services.
-
-## Ranking Model
-
-Feed ordering is currently determined by a lightweight scoring strategy that combines engagement and freshness. Interactions contribute weighted value, and newer posts receive a recency boost. This provides a simple but practical baseline for testing feed behavior before introducing learned ranking models.
-
-This ranking layer is meant to be replaceable. As the system matures, the same flow can support richer feature engineering, offline training pipelines, online inference, and experimentation frameworks.
 
 ## Getting Started
 
@@ -28,7 +11,7 @@ This ranking layer is meant to be replaceable. As the system matures, the same f
 
 - Python 3.11 or newer
 - `pip` for dependency installation
-
+- Docker Desktop or Docker Engine with `docker compose`
 
 ### Installation
 
@@ -43,6 +26,23 @@ Install project dependencies:
 
 ```bash
 pip install -r requirements.txt
+```
+
+Create and setup `.env` file in the project root:
+
+
+### Run Infrastructure
+
+Start PostgreSQL, Redis, and Kafka:
+
+```bash
+docker compose up -d
+```
+
+You can confirm the containers are running with:
+
+```bash
+docker compose ps
 ```
 
 ### Run Locally
@@ -65,5 +65,26 @@ You can confirm the server is running by opening:
 Interactive API docs are also available at:
 
 - `http://127.0.0.1:8000/docs`
+
+### Seed Sample Data
+
+With the API running, you can seed users, posts, and interactions:
+
+```bash
+python3 scripts/seed_data.py
+```
+
+This script talks to the running API over HTTP, and the API writes the resulting data into PostgreSQL.
+
+### Kafka Consumer
+
+A simple consumer script is included for experimenting with the interaction event stream:
+
+```bash
+python3 scripts/interaction_consumer.py
+```
+
+
+
 
 
