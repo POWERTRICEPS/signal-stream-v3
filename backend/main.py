@@ -10,7 +10,7 @@ from .services.feed_service import build_feed
 from .services.models import Interaction, Post, User
 from .services.schemas import FeedItem, InteractionCreate, InteractionOut, PostCreate, PostOut, UserCreate, UserOut
 from .redis_client import redis_client
-
+from .kafka_producer import publish_interaction_event
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
@@ -85,6 +85,17 @@ def create_interaction(payload: InteractionCreate, db: Session = Depends(get_db)
     db.add(interaction)
     db.commit()
     db.refresh(interaction)
+
+    publish_interaction_event(
+        {
+            "interaction_id": interaction.id,
+            "user_id": interaction.user_id,
+            "post_id": interaction.post_id,
+            "event_type": interaction.event_type,
+            "created_at": time.time(),
+        }
+    )
+    
     return interaction
     
 @app.get('/interactions', response_model=list[InteractionOut])
