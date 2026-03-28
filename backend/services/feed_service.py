@@ -6,6 +6,8 @@ from sqlalchemy.orm import Session
 
 from .models import Interaction, Post, User
 
+from backend.redis_client import redis_client
+
 
 def build_feed(user_id: int, db: Session) -> list[dict]:
     """Build a ranked feed by combining engagement counts with a simple recency boost."""
@@ -15,24 +17,20 @@ def build_feed(user_id: int, db: Session) -> list[dict]:
     ranked_posts = []
     now = time.time()
     posts = db.query(Post).all()
-    interactions = db.query(Interaction).all()
-    interaction_counts: dict[int, dict[str, int]] = defaultdict(
-        lambda: {"view": 0, "like": 0, "comment": 0}
-    )
-
-    for interaction in interactions:
-        interaction_counts[interaction.post_id][interaction.event_type] += 1
 
     for post in posts:
-        counts = interaction_counts[post.id]
-        views = counts["view"]
-        likes = counts["like"]
-        comments = counts["comment"]
-        engagement_score = views + likes * 3 + comments * 5
+        metrics_key = f"post_metrics:{post.id}"
+        metrics = redis_client.hgetall(metrics_key)
+
+        views = int(metrics.get("views", 0))
+        likes = int(metrics.get("likes", 0))
+        comments = int(metrics.get("comments", 0))
+
+        engagement_score = views + (likes * 3) + (comments * 5)
         age_in_hours = max(0, (now - post.created_at) / 3600)
         recency_score = max(0, int(24 - age_in_hours))
         score = engagement_score + recency_score
-
+       
         ranked_posts.append(
             {
                 "id": post.id,
