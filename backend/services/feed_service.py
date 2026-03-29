@@ -18,6 +18,40 @@ def build_feed(user_id: int, db: Session) -> list[dict]:
     now = time.time()
     posts = db.query(Post).all()
 
+    author_affinity: dict[int, int] = defaultdict(int)
+    
+    user_interactions = (
+        db.query(Interaction)
+        .filter(Interaction.user_id == user_id)
+        .all()
+    )
+
+    post_ids = [interaction.post_id for interaction in user_interactions]
+    interacted_posts = {}
+
+    if post_ids:
+        interacted_post_list = (
+            db.query(Post)
+            .filter(Post.id.in_(post_ids))
+            .all()
+        )
+        interacted_posts = {post.id: post for post in interacted_post_list}
+
+    for interaction in user_interactions:
+        post = interacted_posts.get(interaction.post_id)
+        if not post:
+            continue 
+        
+        author_id = post.user_id
+
+        if interaction.event_type == "view":
+            author_affinity[author_id] += 1
+        elif interaction.event_type == "like":
+            author_affinity[author_id] += 3
+        elif interaction.event_type == "comment":
+            author_affinity[author_id] += 5
+
+            
     for post in posts:
         metrics_key = f"post_metrics:{post.id}"
         metrics = redis_client.hgetall(metrics_key)
